@@ -1,0 +1,1 @@
+export { LogoSlider } from './LogoSlider';

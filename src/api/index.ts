@@ -1,0 +1,1 @@
+export { generateMotivation } from './generate-motivation';
