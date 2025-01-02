@@ -1,12 +1,34 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useYearName } from '../hooks/useYearName';
 
 export function YearNameEditor() {
+  const { yearName, updateYearName } = useYearName();
   const [isEditing, setIsEditing] = useState(false);
-  const [name, setName] = useState('Pliable Polymath - 2025');
+  const [name, setName] = useState(yearName);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  useEffect(() => {
+    setName(yearName);
+  }, [yearName]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsEditing(false);
+    try {
+      await updateYearName(name);
+      setIsEditing(false);
+    } catch (error) {
+      console.error('Error updating year name:', error);
+    }
+  };
+
+  const handleBlur = async () => {
+    try {
+      await updateYearName(name);
+      setIsEditing(false);
+    } catch (error) {
+      console.error('Error updating year name:', error);
+      // Revert to previous name on error
+      setName(yearName);
+    }
   };
 
   const RocketSymbol = () => (
@@ -66,7 +88,7 @@ export function YearNameEditor() {
           onChange={(e) => setName(e.target.value)}
           className="border-b border-primary-500 bg-transparent focus:outline-none px-1 text-3xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent italic"
           autoFocus
-          onBlur={() => setIsEditing(false)}
+          onBlur={handleBlur}
         />
       </form>
     );

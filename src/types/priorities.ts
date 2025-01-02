@@ -17,3 +17,11 @@ export interface WeeklyPriorities {
   priorities: Priority[];
   userId: string;
 }
+
+export interface QuarterlyGoals {
+  id: string;
+  quarterStart: string;
+  goals: Priority[];
+  userId: string;
+  is_visible: boolean;
+}

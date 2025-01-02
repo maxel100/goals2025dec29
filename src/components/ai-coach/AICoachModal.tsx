@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X, Loader2, Plus } from 'lucide-react';
-import { generateMonthlyPriorities } from '../../services/aiCoach';
+import { generateWeeklyPriorities } from '../../services/aiCoach';
 
 interface AICoachModalProps {
   onClose: () => void;
@@ -17,7 +17,7 @@ export function AICoachModal({ onClose, onAddPriority, setIsEditing }: AICoachMo
     async function fetchSuggestions() {
       try {
         setIsEditing(true);
-        const suggestions = await generateMonthlyPriorities();
+        const suggestions = await generateWeeklyPriorities();
         setSuggestions(suggestions);
         setIsLoading(false);
       } catch (err) {
@@ -50,7 +50,7 @@ export function AICoachModal({ onClose, onAddPriority, setIsEditing }: AICoachMo
             AI Priority Coach
           </h2>
           <p className="text-gray-600 mb-6">
-            Based on your goals and past priorities, here are some suggested monthly priorities:
+            Based on your goals and past priorities, here are some suggested priorities:
           </p>
 
           {isLoading ? (

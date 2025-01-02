@@ -10,13 +10,23 @@ interface WelcomeWizardProps {
 }
 
 export function WelcomeWizard({ onClose }: WelcomeWizardProps) {
-  const { onboardingMode, startOnboarding } = useWizardState();
+  const { onboardingMode, startOnboarding, completeWizard } = useWizardState();
+
+  const handleClose = async () => {
+    await completeWizard();
+    onClose();
+  };
+
+  const handleComplete = async () => {
+    await completeWizard();
+    onClose();
+  };
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-3xl h-[90vh] flex flex-col relative">
         <button
-          onClick={onClose}
+          onClick={handleClose}
           className="absolute right-4 top-4 text-gray-400 hover:text-gray-600 z-10"
         >
           <X className="w-5 h-5" />
@@ -27,9 +37,9 @@ export function WelcomeWizard({ onClose }: WelcomeWizardProps) {
           {!onboardingMode ? (
             <WelcomeModal onSelectMode={startOnboarding} />
           ) : onboardingMode === 'guided' ? (
-            <GuidedSetup onComplete={onClose} />
+            <GuidedSetup onComplete={handleComplete} />
           ) : (
-            <QuickStart onComplete={onClose} />
+            <QuickStart onComplete={handleComplete} />
           )}
         </div>
       </div>

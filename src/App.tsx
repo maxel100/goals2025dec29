@@ -11,7 +11,6 @@ import { useWizardState } from './hooks/useWizardState';
 import { AuthCallback } from './components/auth/AuthCallback';
 import { PasswordReset } from './components/auth/PasswordReset';
 import { CategoryGrid } from './components/CategoryGrid';
-import { GoogleAnalytics } from './components/GoogleAnalytics';
 
 export default function App() {
   const { isLoading: isAuthLoading, error: authError, session } = useAuth();
@@ -20,79 +19,53 @@ export default function App() {
 
   // Handle auth callback route
   if (window.location.pathname === '/auth/callback') {
-    return (
-      <>
-        <GoogleAnalytics />
-        <AuthCallback />
-      </>
-    );
+    return <AuthCallback />;
   }
 
   // Handle password reset route
   if (window.location.hash.includes('type=recovery')) {
-    return (
-      <>
-        <GoogleAnalytics />
-        <PasswordReset />
-      </>
-    );
+    return <PasswordReset />;
   }
 
   if (isAuthLoading || isWizardLoading) {
-    return (
-      <>
-        <GoogleAnalytics />
-        <LoadingScreen />
-      </>
-    );
+    return <LoadingScreen />;
   }
 
   if (!session) {
-    return (
-      <>
-        <GoogleAnalytics />
-        <LandingPage />
-      </>
-    );
+    return <LandingPage />;
   }
 
   const error = authError || goalsError;
   if (error) {
     return (
-      <>
-        <GoogleAnalytics />
-        <div className="min-h-screen bg-white flex items-center justify-center">
-          <div className="text-center">
-            <p className="text-red-600 mb-2">Error loading goals</p>
-            <p className="text-sm text-gray-600">{error}</p>
-          </div>
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-red-600 mb-2">Error loading goals</p>
+          <p className="text-sm text-gray-600">{error}</p>
         </div>
-      </>
+      </div>
     );
   }
 
   return (
-    <>
-      <GoogleAnalytics />
-      <div className="min-h-screen bg-white">
-        <div className="flex flex-col">
-          <TopBar />
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-            <Header totalProgress={totalProgress} />
-            
-            <CategoryGrid 
-              groupedGoals={groupedGoals}
-              onUpdateGoal={updateGoal}
-            />
+    <div className="min-h-screen bg-white">
+      <div className="flex flex-col">
+        <TopBar />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+          <Header totalProgress={totalProgress} />
+          
+          <CategoryGrid 
+            groupedGoals={groupedGoals}
+            onUpdateGoal={updateGoal}
+          />
 
-            <ReflectionsPanel />
-          </div>
+          <ReflectionsPanel />
         </div>
-
-        {showWizard && (
-          <WelcomeWizard onClose={completeWizard} />
-        )}
       </div>
-    </>
+
+      {showWizard && (
+        <WelcomeWizard onClose={completeWizard} />
+      )}
+    </div>
   );
 }

@@ -63,63 +63,16 @@ export function QuickStart({ onComplete }: QuickStartProps) {
         .select();
 
       if (goalsError) {
-        console.error('Error inserting goals:', goalsError);
+        console.error('Error saving goals:', goalsError);
         throw goalsError;
       }
-      console.log('Goals inserted successfully:', goalsData);
+      console.log('Goals saved successfully:', goalsData);
 
-      // Create or update life mission
-      const { data: missionData, error: missionError } = await supabase
-        .from('life_mission')
-        .upsert({
-          user_id: user.id,
-          vision: 'Living a balanced and fulfilling life',
-          importance: 'To achieve personal growth and make a positive impact',
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        }, {
-          onConflict: 'user_id'
-        })
-        .select();
-
-      if (missionError) {
-        console.error('Error upserting life mission:', missionError);
-        throw missionError;
-      }
-      console.log('Life mission upserted successfully:', missionData);
-
-      // Create or update yearly debrief
-      const { data: debriefData, error: debriefError } = await supabase
-        .from('yearly_debrief')
-        .upsert({
-          user_id: user.id,
-          wins: 'Starting my goals journey',
-          challenges: 'Building new habits',
-          lessons: 'Taking consistent action leads to progress',
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        }, {
-          onConflict: 'user_id'
-        })
-        .select();
-
-      if (debriefError) {
-        console.error('Error upserting yearly debrief:', debriefError);
-        throw debriefError;
-      }
-      console.log('Yearly debrief upserted successfully:', debriefData);
-
-      // Mark wizard as completed
+      // Call the mark_wizard_completed function
       const { data: wizardData, error: wizardError } = await supabase
-        .from('wizard_completion')
-        .upsert({
-          user_id: user.id,
-          completed: true,
-          created_at: new Date().toISOString()
-        }, {
-          onConflict: 'user_id'
-        })
-        .select();
+        .rpc('mark_wizard_completed', {
+          user_uuid: user.id
+        });
 
       if (wizardError) {
         console.error('Error marking wizard as completed:', wizardError);

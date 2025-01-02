@@ -7,6 +7,8 @@ import { DailyPriorities } from './priorities/DailyPriorities';
 import { InternalTalk } from './dropdowns/InternalTalk';
 import { RulesOfSuccess } from './dropdowns/RulesOfSuccess';
 import { WeeklyMotivation } from './WeeklyMotivation';
+import { QuarterlyGoals } from './priorities/QuarterlyGoals';
+import { useQuarterlyGoals } from '../hooks/useQuarterlyGoals';
 
 interface HeaderProps {
   totalProgress: number;
@@ -14,6 +16,7 @@ interface HeaderProps {
 
 export function Header({ totalProgress }: HeaderProps) {
   const [activeSection, setActiveSection] = useState<string | null>(null);
+  const { goals: quarterlyGoals } = useQuarterlyGoals();
 
   const toggleSection = (section: string) => {
     setActiveSection(activeSection === section ? null : section);
@@ -61,10 +64,11 @@ export function Header({ totalProgress }: HeaderProps) {
         )}
 
         {/* Priorities Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className={`grid grid-cols-1 ${quarterlyGoals?.is_visible ? 'md:grid-cols-4' : 'md:grid-cols-3'} gap-6`}>
           <DailyPriorities />
           <WeeklyPriorities />
           <MonthlyGoals />
+          {quarterlyGoals?.is_visible && <QuarterlyGoals />}
         </div>
         
         {/* Progress Bar */}

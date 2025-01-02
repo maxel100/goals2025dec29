@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { LogOut, Trash2, Mail, AlertTriangle, Loader2 } from 'lucide-react';
+import { LogOut, Trash2, Mail, AlertTriangle, Loader2, ListChecks } from 'lucide-react';
 import { signOut } from '../../lib/auth';
 import { deleteAccount } from '../../lib/delete';
 import { EmailPreferences } from './EmailPreferences';
+import { PrioritiesSettings } from './PrioritiesSettings';
 import { supabase } from '../../lib/supabase';
 import { getCurrentUser } from '../../lib/auth';
 
@@ -14,7 +15,7 @@ export function SettingsMenu({ onClose }: SettingsMenuProps) {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [activeSection, setActiveSection] = useState<'email' | null>(null);
+  const [activeSection, setActiveSection] = useState<'email' | 'priorities' | null>(null);
 
   const handleLogout = async () => {
     try {
@@ -100,8 +101,34 @@ export function SettingsMenu({ onClose }: SettingsMenuProps) {
             </button>
           </div>
         </>
+      ) : activeSection === 'priorities' ? (
+        <>
+          <div className="flex items-center gap-3 p-4 border-b">
+            <div className="p-2 bg-primary-100 rounded-lg">
+              <ListChecks className="w-5 h-5 text-primary-600" />
+            </div>
+            <h3 className="font-medium">Priorities Settings</h3>
+          </div>
+          <PrioritiesSettings />
+          <div className="p-4 border-t">
+            <button
+              onClick={() => setActiveSection(null)}
+              className="text-sm text-gray-600 hover:text-gray-800"
+            >
+              Back to Settings
+            </button>
+          </div>
+        </>
       ) : (
         <div className="py-2">
+          <button
+            onClick={() => setActiveSection('priorities')}
+            className="w-full px-4 py-2 text-left text-sm hover:bg-gray-50 flex items-center gap-3"
+          >
+            <ListChecks className="w-4 h-4" />
+            Priorities Settings
+          </button>
+
           <button
             onClick={() => setActiveSection('email')}
             className="w-full px-4 py-2 text-left text-sm hover:bg-gray-50 flex items-center gap-3"

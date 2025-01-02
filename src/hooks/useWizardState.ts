@@ -17,25 +17,25 @@ export function useWizardState() {
     try {
       const user = await getCurrentUser();
       
-      // Check if user has any goals
-      const { data: goals } = await supabase
-        .from('goals')
-        .select('id')
-        .eq('user_id', user.id)
-        .limit(1);
-
-      // Check wizard completion state
+      // Check wizard completion state first
       const { data: wizardState } = await supabase
         .from('wizard_completion')
-        .select('completed, onboarding_mode')
+        .select('completed')
         .eq('user_id', user.id)
         .single();
 
-      // Show wizard only if no goals and wizard not completed
-      setShowWizard((!goals?.length && !wizardState?.completed) || false);
-      setOnboardingMode(wizardState?.onboarding_mode as OnboardingMode || null);
+      // If wizard is completed, don't show it
+      if (wizardState?.completed) {
+        setShowWizard(false);
+        setIsLoading(false);
+        return;
+      }
+
+      // If wizard is not completed, show it
+      setShowWizard(true);
     } catch (error) {
       console.error('Error checking wizard state:', error);
+      setShowWizard(false);
     } finally {
       setIsLoading(false);
     }
@@ -53,7 +53,6 @@ export function useWizardState() {
           started_at: new Date().toISOString()
         });
       setOnboardingMode(mode);
-      setShowWizard(true);
     } catch (error) {
       console.error('Error starting onboarding:', error);
     }

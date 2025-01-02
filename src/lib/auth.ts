@@ -37,7 +37,7 @@ export async function handleAuthCallback() {
   if (session) {
     // Initialize user records after successful auth
     try {
-      await supabase.rpc('ensure_user_records');
+      await supabase.rpc('ensure_user_records', { p_user_id: session.user.id });
     } catch (err) {
       console.error('Error ensuring user records:', err);
     }
